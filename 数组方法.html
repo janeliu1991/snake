@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    //forEach ,map , filter ,findIndex, some ,every
+    var arr = [1, 2, 3, 4];
+    //1.forEach没有返回值，单纯用来遍历数组的方法
+    // var res = arr.forEach( function( item,index ){
+    //     console.log(item,index);
+
+    //     return true;
+    // } )
+
+    // console.log("res:"+res)
+
+    //2.map是将老数组映射成一个新数组，新数组得到的内容就是函数中return的内容
+    // var res = arr.map( function(item,index){
+    //     console.log(item,index);
+    //     return item * item;
+    // } )
+
+    // console.log(Object.prototype.toString.call( res ) )
+    // console.log(res);
+
+    //3.filter是将数组中的元素进行过滤，符合条件时return true，就遍历的元素添加到结果数组res中
+    //如果return false，就不会将遍历的元素添加到res中。
+    // var res = arr.filter( function(item,index){
+    //     console.log(item,index);
+    //     if(item>3){
+    //         return true;
+    //     }else{
+    //         return false;
+    //     }
+    // } )
+
+    // console.log(res);
+
+    //4.findIndex是用来查找符合条件的元素的索引
+    // var res = arr.findIndex( function(item,index){
+    //     // console.log(item,index);
+    //     if(item === 2){
+    //         return true
+    //     }else{
+    //         return false
+    //     }
+    // } )
+
+    // console.log(res);
+
+    var persons = [{
+        name: "jack",
+        gender: "男",
+        age: 20
+    }, {
+        name: "rose",
+        gender: "女",
+        age: 18
+    }, {
+        name: "lily",
+        gender: "女",
+        age: 16
+    }]
+
+    // some方法的意思就是查找数组中是否有一个元素能够符合条件
+    // 只有有一个符合条件，some方法的结果就为true，否则结果为假
+    var res = persons.some(function(item, index) {
+        console.log(item, index);
+        if (item.age == 16) {
+            return true
+        } else {
+            return false
+        }
+
+    })
+
+    console.log(res);
+
+    //every方法:每一个遍历的元素都符合条件，every方法才会返回true
+    //只要有一个元素不符合条件，every方法就会返回false
+    // var res = persons.every(function(item, index) {
+    //     console.log(item, index);
+
+    //     if (item.age >= 18) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // })
+
+    // console.log(res);
+</script>
+
+</html>
