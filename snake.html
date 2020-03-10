@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .box {
+      position: relative;
+      margin: 50px auto 0;
+      width: 500px;
+      height: 500px;
+      background-color: #efefef;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box"></div>
+</body>
+<script>
+  let box = document.querySelector('.box')
+  let foodEl = []
+  let snakeEl = []
+  let tools = {
+    getRandom: function (min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min
+    }
+  }
+  function foodRemove() {
+    for (let i = foodEl.length - 1; i >= 0; i--) {       
+      foodEl[i].parentNode.removeChild(foodEl[i])   
+      foodEl.splice(i, 1)
+    }
+  }
+  function Food(options) {
+    options = options || {}
+    this.width = options.width || 10
+    this.height = options.height || 10
+    this.position = 'absolute'
+  }
+  Food.prototype.render = function (map) {
+    foodRemove()
+    let colorArr = []
+    for (let i = 0; i < 3; i++) {
+      colorArr.push(tools.getRandom(0, 255))
+    }
+    this.x = tools.getRandom(0, map.offsetWidth / this.width - 1)
+    this.y = tools.getRandom(0, map.offsetHeight / this.height - 1)
+    let div = document.createElement('div')
+    div.style.width = this.width + 'px'
+    div.style.height = this.height + 'px'
+    div.style.position = this.position
+    div.style.backgroundColor = 'rgb(' + colorArr[0] + ',' + colorArr[1] + ',' + colorArr[2] + ')'
+    div.style.left = this.x * this.width + 'px'
+    div.style.top = this.y * this.height + 'px'
+    map.appendChild(div)
+    foodEl.push(div)
+  }
+  function snakeRemove() {
+    for (let i = snakeEl.length - 1; i >= 0; i--) {
+      snakeEl[i].parentNode.removeChild(snakeEl[i])
+      snakeEl.splice(i, 1)
+    }
+  }
+  function Snake(options) {
+    options = options || {}
+    this.width = options.width || 10
+    this.height = options.height || 10
+    this.direction = options.direction || 'right'
+    this.position = 'absolute'
+    this.body = [{ x: 3, y: 2, color: 'green' }, { x: 2, y: 2, color: 'skyBlue' }]
+  }
+  Snake.prototype.render = function (map) {
+    snakeRemove()
+    for (let i = 0; i < this.body.length; i++) {
+      let div = document.createElement('div')
+      div.style.width = this.width + 'px'
+      div.style.height = this.height + 'px'
+      div.style.position = this.position
+      div.style.left = this.body[i].x * this.width + 'px'
+      div.style.top = this.body[i].y * this.height + 'px'
+      div.style.backgroundColor = this.body[i].color
+      map.appendChild(div)
+      snakeEl.push(div)
+    }
+  }
+  Snake.prototype.move = function (food, map) {
+    for (let i = this.body.length - 1; i > 0; i--) {
+      this.body[i].x = this.body[i - 1].x
+      this.body[i].y = this.body[i - 1].y
+    }
+    let header = this.body[0]
+    switch (this.direction) {
+      case 'right':
+        header.x += 1
+        break
+      case 'left':
+        header.x -= 1
+        break
+      case 'top':
+        header.y -= 1
+        break
+      case 'bottom':
+        header.y += 1
+    }
+    let headerX = header.x
+    let headerY = header.y
+    if (headerX === food.x && headerY === food.y) {
+      let last = this.body[this.body.length - 1]
+      this.body.push({
+        x: last.x,
+        y: last.y,
+        color: last.color
+      })
+      food.render(map)
+    }
+  }
+  function Game(map) {
+    this.food = new Food()
+    this.snake = new Snake()
+    this.map = map
+    that = this
+  }
+  Game.prototype.start = function () {
+    this.food.render(this.map)
+    this.snake.render(this.map)
+    runSnake()
+    bindKey()
+  }
+  function runSnake() {
+    var timer = setInterval(function () {
+      this.snake.move(this.food, this.map)
+      this.snake.render(this.map)
+      let maxX = this.map.offsetWidth / this.snake.width
+      let maxY = this.map.offsetHeight / this.snake.height
+      if (this.snake.body[0].x >= maxX || this.snake.body[0].y >= maxY || this.snake.body[0].x < 0 || this.snake.body[0].y < 0) {
+        alert('game over')
+        clearInterval(timer)
+      }
+    }.bind(that), 150)
+  }
+  function bindKey() {
+    document.addEventListener('keydown', function (e) {
+      switch (e.keyCode) {
+        case 37:
+          this.snake.direction = 'left'
+          break;
+        case 38:
+          this.snake.direction = 'top'
+          break;
+        case 39:
+          this.snake.direction = 'right'
+          break;
+        case 40:
+          this.snake.direction = 'bottom'
+          break;
+      }
+    }.bind(that), false)
+  }
+  let game = new Game(box)
+  game.start()
+</script>
+
+</html>
